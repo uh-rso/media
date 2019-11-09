@@ -1,7 +1,9 @@
 package com.uh.server;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -10,6 +12,7 @@ import java.util.stream.StreamSupport;
 import com.uh.server.dto.MediaDto;
 import com.uh.server.persistence.jpa.MediaEntity;
 import com.uh.server.persistence.jpa.MediaRepository;
+import com.uh.server.persistence.jpa.TagEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -23,9 +26,11 @@ public class MediaService {
     private static final Logger LOG = LoggerFactory.getLogger(MediaService.class);
 
     private final MediaRepository mediaRepository;
+    private final TagExtractor tagExtractor;
 
-    public MediaService(final MediaRepository mediaRepository) {
+    public MediaService(final MediaRepository mediaRepository, final TagExtractor tagExtractor) {
         this.mediaRepository = mediaRepository;
+        this.tagExtractor = tagExtractor;
     }
 
     private static MediaDto mapToDto(final MediaEntity entity) {
@@ -37,6 +42,18 @@ public class MediaService {
         // mediaDto.setInternalType(entity.getInternalType());
         mediaDto.setOwnerId(entity.getOwnerId());
         mediaDto.setCreateDateTime(entity.getCreateDateTime());
+        /*
+        mediaDto.setTags(entity.getTags().stream().map(t -> {
+            var tag = new TagDto();
+            tag.setName(t.getName());
+            tag.setValue(t.getValue());
+            return tag;
+        }).collect(Collectors.toList()));
+         */
+        mediaDto.setTags(new HashMap<>());
+        entity.getTags().forEach(t -> {
+            mediaDto.getTags().put(t.getName(), t.getValue());
+        });
         return mediaDto;
     }
 
@@ -74,7 +91,7 @@ public class MediaService {
             entity.setBlob(file.getBytes());
         }
         catch (IOException e) {
-            LOG.error("Error creating media", e);
+            LOG.error("Error reading file when creating media", e);
         }
         entity.setOriginalFilename(file.getOriginalFilename());
         if (file.getContentType() != null) {
@@ -83,8 +100,29 @@ public class MediaService {
         }
         // entity.setStorageResourceId();
 
+        // Set tags
+        // TODO Move to another class
+        final Map<String, String> imageMeta = tagExtractor.getTags(file);
+
         final MediaEntity saved = mediaRepository.save(entity);
-        return mapToDto(saved);
+
+        imageMeta.keySet().forEach(key -> {
+            try {
+                var tag = new TagEntity();
+                tag.setName(key);
+                tag.setValue(imageMeta.get(key));
+                tag.setMedia(saved);
+                entity.getTags().add(tag);
+            }
+            catch (Exception e) {
+                LOG.error("Could not add meta tags");
+                throw new RuntimeException(e);
+            }
+        });
+
+        final MediaEntity saved2 = mediaRepository.save(entity);
+
+        return mapToDto(saved2);
     }
 
     public void delete(final String id) {

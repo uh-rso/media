@@ -1,10 +1,16 @@
 package com.uh.server.persistence.jpa;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.OneToMany;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -32,6 +38,11 @@ public class MediaEntity {
     @Getter
     @Setter
     private String storageResourceId;
+
+    @Getter
+    @Setter
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "media")
+    private Set<TagEntity> tags = new HashSet<>();
 
     @Getter
     @Setter
