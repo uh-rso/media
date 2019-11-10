@@ -27,10 +27,15 @@ public class MediaService {
 
     private final MediaRepository mediaRepository;
     private final TagExtractor tagExtractor;
+    private final CollectionService collectionService;
 
-    public MediaService(final MediaRepository mediaRepository, final TagExtractor tagExtractor) {
+    public MediaService(
+            final MediaRepository mediaRepository,
+            final TagExtractor tagExtractor,
+            final CollectionService collectionService) {
         this.mediaRepository = mediaRepository;
         this.tagExtractor = tagExtractor;
+        this.collectionService = collectionService;
     }
 
     private static MediaDto mapToDto(final MediaEntity entity) {
@@ -122,7 +127,16 @@ public class MediaService {
 
         final MediaEntity saved2 = mediaRepository.save(entity);
 
-        return mapToDto(saved2);
+        MediaDto mediaDto = mapToDto(saved2);
+
+        try {
+            collectionService.evaluateMedia(mediaDto);
+        }
+        catch (Exception e) {
+            LOG.error("Could not evaluate media", e);
+        }
+
+        return mediaDto;
     }
 
     public void delete(final String id) {
