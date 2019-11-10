@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping(path = "/media")
+@RequestMapping(path = "/v1/media")
 public class MediaController {
 
     private final MediaService mediaService;

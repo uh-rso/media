@@ -25,7 +25,7 @@ public class CollectionService {
     public void evaluateMedia(final MediaDto mediaDto) {
         if (evaluateMedia) {
             final RestTemplate restTemplate = new RestTemplate();
-            restTemplate.postForObject(collectionApiUrl + "/collections/media", mediaDto, Object.class);
+            restTemplate.postForObject(collectionApiUrl + "/v1/collections/media", mediaDto, Object.class);
         }
     }
 
