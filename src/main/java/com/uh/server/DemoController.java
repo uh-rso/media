@@ -23,7 +23,7 @@ public class DemoController {
                 "Aplikacija za shranjevanje slik, iz katerih izluščimo geolokacijo in prikažemo države, kjer je uporabnik že bil.",
                 Arrays.asList("http://35.228.221.209/v1/media", "http://35.228.115.194/v1/collections"),
                 Arrays.asList("https://github.com/uh-rso/media", "https://github.com/uh-rso/collection"),
-                Arrays.asList("https://travis-ci.org/uh-rso/collection", "https://travis-ci.org/uh-rso/media"),
+                Arrays.asList("https://travis-ci.org/uh-rso/media", "https://travis-ci.org/uh-rso/collection"),
                 Arrays.asList("https://hub.docker.com/r/uroshekic/rso-media", "https://hub.docker.com/r/uroshekic/rso-collection")
         );
     }
