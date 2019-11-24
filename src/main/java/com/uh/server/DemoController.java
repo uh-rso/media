@@ -24,7 +24,7 @@ public class DemoController {
                 Arrays.asList("http://35.228.221.209/v1/media", "http://35.228.115.194/v1/collections"),
                 Arrays.asList("https://github.com/uh-rso/media", "https://github.com/uh-rso/collection"),
                 Arrays.asList("https://travis-ci.org/uh-rso/collection", "https://travis-ci.org/uh-rso/media"),
-                Arrays.asList("https://hub.docker.com/r/uroshekic/rso-collection", "https://hub.docker.com/r/uroshekic/rso-media")
+                Arrays.asList("https://hub.docker.com/r/uroshekic/rso-media", "https://hub.docker.com/r/uroshekic/rso-collection")
         );
     }
 
