@@ -13,6 +13,8 @@ import com.uh.server.dto.MediaDto;
 import com.uh.server.persistence.jpa.MediaEntity;
 import com.uh.server.persistence.jpa.MediaRepository;
 import com.uh.server.persistence.jpa.TagEntity;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -28,14 +30,17 @@ public class MediaService {
     private final MediaRepository mediaRepository;
     private final TagExtractor tagExtractor;
     private final CollectionService collectionService;
+    private final MeterRegistry meterRegistry;
 
     public MediaService(
             final MediaRepository mediaRepository,
             final TagExtractor tagExtractor,
-            final CollectionService collectionService) {
+            final CollectionService collectionService,
+            final MeterRegistry meterRegistry) {
         this.mediaRepository = mediaRepository;
         this.tagExtractor = tagExtractor;
         this.collectionService = collectionService;
+        this.meterRegistry = meterRegistry;
     }
 
     private static MediaDto mapToDto(final MediaEntity entity) {
@@ -136,11 +141,23 @@ public class MediaService {
             LOG.error("Could not evaluate media", e);
         }
 
+        incrementMediaCounter();
+
         return mediaDto;
     }
 
     public void delete(final String id) {
         mediaRepository.deleteById(Long.valueOf(id));
+    }
+
+    private void incrementMediaCounter() {
+        // https://blog.autsoft.hu/defining-custom-metrics-in-a-spring-boot-application-using-micrometer/
+        // https://www.baeldung.com/micrometer
+        // mediaCounter = this.meterRegistry.counter("media.created");
+        final var mediaCounter = Counter.builder("media.created")
+                .description("Number of all medium created.")
+                .register(meterRegistry);
+        mediaCounter.increment();
     }
 
 }
