@@ -31,8 +31,8 @@ public class MdcLogEnhancerFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException
     {
         MDC.put("userId", "user1");
-        MDC.put("application_name", applicationName);
-        MDC.put("microservice_version", versionHolder.getVersion());
+        MDC.put("applicationName", applicationName);
+        MDC.put("applicationVersion", versionHolder.getVersion());
         filterChain.doFilter(servletRequest, servletResponse);
     }
 }
