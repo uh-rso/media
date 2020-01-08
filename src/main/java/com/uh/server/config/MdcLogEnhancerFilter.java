@@ -11,7 +11,7 @@ import java.io.IOException;
 @Component
 public class MdcLogEnhancerFilter implements Filter {
 
-    @Value("${spring.application.name}")
+    @Value("${spring.application.name:unknown}")
     private String applicationName;
 
     @Autowired
