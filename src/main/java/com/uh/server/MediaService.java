@@ -146,7 +146,8 @@ public class MediaService {
         return mediaDto;
     }
 
-    public void delete(final String id) {
+    public void delete(final String id, final String userId) {
+        // TODO Check ownerId!
         mediaRepository.deleteById(Long.valueOf(id));
     }
 
