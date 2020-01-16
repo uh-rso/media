@@ -43,7 +43,7 @@ public class MediaService {
         this.meterRegistry = meterRegistry;
     }
 
-    private static MediaDto mapToDto(final MediaEntity entity) {
+    private static MediaDto mapToDto(final MediaEntity entity, final boolean loadTags) {
         final MediaDto mediaDto = new MediaDto();
         mediaDto.setId(entity.getId().toString());
         mediaDto.setOriginalFilename(entity.getOriginalFilename());
@@ -60,11 +60,17 @@ public class MediaService {
             return tag;
         }).collect(Collectors.toList()));
          */
-        mediaDto.setTags(new HashMap<>());
-        entity.getTags().forEach(t -> {
-            mediaDto.getTags().put(t.getName(), t.getValue());
-        });
+        if (loadTags) {
+            mediaDto.setTags(new HashMap<>());
+            entity.getTags().forEach(t -> {
+                mediaDto.getTags().put(t.getName(), t.getValue());
+            });
+        }
         return mediaDto;
+    }
+
+    private static MediaDto mapToDto(final MediaEntity entity) {
+        return mapToDto(entity, false);
     }
 
     public List<MediaDto> getAll() {
