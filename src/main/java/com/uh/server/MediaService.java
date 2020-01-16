@@ -70,7 +70,7 @@ public class MediaService {
     }
 
     private static MediaDto mapToDto(final MediaEntity entity) {
-        return mapToDto(entity, false);
+        return mapToDto(entity, true);
     }
 
     public List<MediaDto> getAll() {
