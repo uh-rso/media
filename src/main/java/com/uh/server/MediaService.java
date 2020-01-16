@@ -138,7 +138,7 @@ public class MediaService {
 
         final MediaEntity saved2 = mediaRepository.save(entity);
 
-        MediaDto mediaDto = mapToDto(saved2);
+        MediaDto mediaDto = mapToDto(saved2, true);
 
         try {
             collectionService.evaluateMedia(mediaDto);
